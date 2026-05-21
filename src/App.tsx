@@ -1,25 +1,19 @@
 import "./App.css";
+import { FormList } from "./Components/FormList";
 import { useFetchGraph } from "./formsFetch";
 
 function App() {
   const tenantId = "1";
   const actionBlueprintId = "1";
-  const graphFetch = useFetchGraph(tenantId, actionBlueprintId);
-  switch (graphFetch.type) {
-    case "success": {
-      console.log(graphFetch.data);
-      console.log(graphFetch.data.nodes[0].data.component_id);
-      break;
-    }
-    case "loading": {
-      console.log("loading graph");
-      break;
-    }
-    case "error": {
-      console.log(graphFetch.message);
-    }
-  }
-  return <></>;
+  const forms = useFetchGraph(tenantId, actionBlueprintId);
+
+  return (
+    <>
+      {forms.type === "success" && <FormList forms={forms.data} />}
+      {forms.type === "loading" && <h1>Loading</h1>}
+      {forms.type === "error" && <h1>Error</h1>}
+    </>
+  );
 }
 
 export default App;

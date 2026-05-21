@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { graphFromData } from "./graph";
+import type { Graph } from "./graph";
 
 export function useFetchGraph(tenantId: string, actionBlueprintId: string) {
   const [fetchState, setFetchState] = useState<FetchState>({ type: "loading" });
@@ -9,7 +11,8 @@ export function useFetchGraph(tenantId: string, actionBlueprintId: string) {
       try {
         const response = await fetch(url);
         const json: JSONGraphDescription = await response.json();
-        setFetchState({ type: "success", data: json });
+        const forms = graphFromData(json);
+        setFetchState({ type: "success", data: forms });
       } catch {
         setFetchState({
           type: "error",
@@ -28,7 +31,7 @@ export type FetchState = FetchSuccess | FetchError | FetchLoading;
 
 export type FetchSuccess = {
   type: "success";
-  data: JSONGraphDescription;
+  data: Graph;
 };
 
 export type FetchError = {
@@ -125,11 +128,12 @@ export type FieldProperty =
 
 // ─── Form Schema ──────────────────────────────────────────────────────────────
 
-export type FieldSchema = {
-  type: "object";
-  properties: Record<string, FieldProperty>;
-  required?: string[];
-};
+export type FieldSchema = { [property: string]: JsonSchema7 };
+// export type FieldSchema = {
+//   type: "object";
+//   properties: Record<string, FieldProperty>;
+//   required?: string[];
+// };
 
 export type UIElementOptions = {
   format: string;

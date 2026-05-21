@@ -1,0 +1,6 @@
+.border {
+    border: 1px solid gray;
+    min-width: fit-content;
+    max-width: 200px;
+    border-radius: 20px;
+}
