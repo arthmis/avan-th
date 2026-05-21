@@ -1,19 +1,8 @@
 import "./App.css";
-import { FormList } from "./Components/FormList";
-import { useFetchGraph } from "./formsFetch";
+import { GraphView } from "./Components/GraphView";
 
 function App() {
-  const tenantId = "1";
-  const actionBlueprintId = "1";
-  const forms = useFetchGraph(tenantId, actionBlueprintId);
-
-  return (
-    <>
-      {forms.type === "success" && <FormList forms={forms.data} />}
-      {forms.type === "loading" && <h1>Loading</h1>}
-      {forms.type === "error" && <h1>Error</h1>}
-    </>
-  );
+  return <GraphView />;
 }
 
 export default App;

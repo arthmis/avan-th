@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { graphFromData } from "./graph";
-import type { Graph } from "./graph";
+import { graphFromData } from "./Graph/createGraph";
+import type { ActionBlueprintGraph } from "./Graph/graphTypes";
 
 export function useFetchGraph(tenantId: string, actionBlueprintId: string) {
   const [fetchState, setFetchState] = useState<FetchState>({ type: "loading" });
@@ -10,7 +10,7 @@ export function useFetchGraph(tenantId: string, actionBlueprintId: string) {
     const fetchFunc = async () => {
       try {
         const response = await fetch(url);
-        const json: JSONGraphDescription = await response.json();
+        const json: RawActionBlueprintGraph = await response.json();
         const forms = graphFromData(json);
         setFetchState({ type: "success", data: forms });
       } catch {
@@ -31,7 +31,7 @@ export type FetchState = FetchSuccess | FetchError | FetchLoading;
 
 export type FetchSuccess = {
   type: "success";
-  data: Graph;
+  data: ActionBlueprintGraph;
 };
 
 export type FetchError = {
@@ -45,23 +45,23 @@ export type FetchLoading = {
 
 // ─── Root ─────────────────────────────────────────────────────────────────────
 
-export type JSONGraphDescription = {
+export type RawActionBlueprintGraph = {
   $schema?: string;
   id: string;
   tenant_id: string;
   name: string;
   description: string;
   category: string;
-  nodes: Node[];
-  edges: Edge[];
-  forms: Form[];
+  nodes: RawNode[];
+  edges: RawEdge[];
+  forms: RawForm[];
   branches: unknown[];
   triggers: unknown[];
 };
 
 // ─── Primitives ───────────────────────────────────────────────────────────────
 
-export type SlaDuration = {
+export type RawSlaDuration = {
   number: number;
   unit: "minutes" | "hours" | "days";
 };
@@ -71,114 +71,129 @@ export type Position = {
   y: number;
 };
 
-// ─── Field Properties ─────────────────────────────────────────────────────────
+// ─── Field Property Primitives ────────────────────────────────────────────────
 
-export type EnumItems = {
+/** The JSON Schema primitive type of a field value. */
+export type RawFieldJsonType = "string" | "object" | "array" | "boolean" | "number";
+
+/** The Avantos-specific UI widget type for a field. */
+export type AvantosFieldType =
+  | "button"
+  | "checkbox-group"
+  | "object-enum"
+  | "short-text"
+  | "multi-line-text"
+  | "multi-select";
+
+/** Describes the allowed values for enum-backed array fields. */
+export type RawFieldItems = {
   enum: string[];
   type: "string";
 };
 
-export type FieldPropertyButton = {
+// ─── Field Properties ─────────────────────────────────────────────────────────
+
+export type RawFieldPropertyButton = {
   avantos_type: "button";
   title: string;
   type: "object";
 };
 
-export type FieldPropertyCheckboxGroup = {
+export type RawFieldPropertyCheckboxGroup = {
   avantos_type: "checkbox-group";
-  items: EnumItems;
+  items: RawFieldItems;
   type: "array";
   uniqueItems: boolean;
 };
 
-export type FieldPropertyObjectEnum = {
+export type RawFieldPropertyObjectEnum = {
   avantos_type: "object-enum";
-  enum: Record<string, unknown>[] | null;
+  enum: Record<string, unknown>[] | undefined;
   title: string;
   type: "object";
 };
 
-export type FieldPropertyShortText = {
+export type RawFieldPropertyShortText = {
   avantos_type: "short-text";
   title: string;
   type: "string";
   format?: string;
 };
 
-export type FieldPropertyMultiLineText = {
+export type RawFieldPropertyMultiLineText = {
   avantos_type: "multi-line-text";
   title: string;
   type: "string";
 };
 
-export type FieldPropertyMultiSelect = {
+export type RawFieldPropertyMultiSelect = {
   avantos_type: "multi-select";
-  items: EnumItems;
+  items: RawFieldItems;
   type: "array";
   uniqueItems: boolean;
 };
 
-export type FieldProperty =
-  | FieldPropertyButton
-  | FieldPropertyCheckboxGroup
-  | FieldPropertyObjectEnum
-  | FieldPropertyShortText
-  | FieldPropertyMultiLineText
-  | FieldPropertyMultiSelect;
+/** Discriminated union over all possible field property shapes. */
+export type RawFieldProperty =
+  | RawFieldPropertyButton
+  | RawFieldPropertyCheckboxGroup
+  | RawFieldPropertyObjectEnum
+  | RawFieldPropertyShortText
+  | RawFieldPropertyMultiLineText
+  | RawFieldPropertyMultiSelect;
 
 // ─── Form Schema ──────────────────────────────────────────────────────────────
 
-export type FieldSchema = { [property: string]: JsonSchema7 };
-// export type FieldSchema = {
-//   type: "object";
-//   properties: Record<string, FieldProperty>;
-//   required?: string[];
-// };
+export type RawFieldSchema = {
+  type: "object";
+  properties: Record<string, RawFieldProperty>;
+  required: string[];
+};
 
-export type UIElementOptions = {
+export type RawUiSchemaElementOptions = {
   format: string;
 };
 
-export type UIElement = {
+export type RawUiSchemaElement = {
   type: "Control" | "Button";
   scope: string;
   label: string;
-  options?: UIElementOptions;
+  options?: RawUiSchemaElementOptions;
 };
 
-export type UISchema = {
+export type RawUiSchema = {
   type: "VerticalLayout";
-  elements: UIElement[];
+  elements: RawUiSchemaElement[];
 };
 
-export type PayloadField = {
+export type RawDynamicPayloadField = {
   type: "form_field";
   value: string;
 };
 
-export type DynamicFieldConfigItem = {
+export type RawDynamicFieldEntry = {
   selector_field: string;
-  payload_fields: Record<string, PayloadField>;
+  payload_fields: Record<string, RawDynamicPayloadField>;
   endpoint_id: string;
 };
 
-export type DynamicFieldConfig = Record<string, DynamicFieldConfigItem>;
+export type RawDynamicFieldConfig = Record<string, RawDynamicFieldEntry>;
 
 // ─── Form ─────────────────────────────────────────────────────────────────────
 
-export type Form = {
+export type RawForm = {
   id: string;
   name: string;
   description: string;
   is_reusable: boolean;
-  field_schema: FieldSchema;
-  ui_schema: UISchema;
-  dynamic_field_config: DynamicFieldConfig;
+  field_schema: RawFieldSchema;
+  ui_schema: RawUiSchema;
+  dynamic_field_config: RawDynamicFieldConfig;
 };
 
 // ─── Graph Nodes & Edges ──────────────────────────────────────────────────────
 
-export type NodeData = {
+export type RawNodeData = {
   id: string;
   component_key: string;
   component_type: "form";
@@ -187,19 +202,19 @@ export type NodeData = {
   prerequisites: string[];
   permitted_roles: string[];
   input_mapping: Record<string, unknown>;
-  sla_duration: SlaDuration;
+  sla_duration: RawSlaDuration;
   approval_required: boolean;
   approval_roles: string[];
 };
 
-export type Node = {
+export type RawNode = {
   id: string;
   type: "form";
   position: Position;
-  data: NodeData;
+  data: RawNodeData;
 };
 
-export type Edge = {
+export type RawEdge = {
   source: string;
   target: string;
 };

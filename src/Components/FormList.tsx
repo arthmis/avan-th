@@ -1,16 +1,45 @@
-import { useState } from "react";
-import type { Graph } from "../graph";
-import { Form } from "./Form";
+import type { ActionBlueprintGraph } from "../Graph/graphTypes";
+import type { PrefillMap, PrefillSource } from "../PrefillMap";
+import { NodeView } from "./NodeView";
 
 type Props = {
-  forms: Graph;
+  graph: ActionBlueprintGraph;
+  selectedNodeId: string | undefined;
+  handleSelectNode: (nodeId: string) => void;
+  prefillMap: PrefillMap;
+  onSetPrefill: (nodeId: string, fieldKey: string, source: PrefillSource) => void;
+  onClearPrefill: (nodeId: string, fieldKey: string) => void;
 };
 
-export function FormList(props: Props) {
+export function FormList({
+  graph,
+  selectedNodeId,
+  handleSelectNode,
+  prefillMap,
+  onSetPrefill,
+  onClearPrefill,
+}: Props) {
   return (
     <>
-      {props.forms.map((form) => {
-        return <Form key={form.nodeId} data={form} />;
+      {graph.nodes.map((node) => {
+        const formDefinition = graph.forms.get(node.formId);
+        if (!formDefinition) {
+          return undefined;
+        }
+
+        return (
+          <NodeView
+            key={node.nodeId}
+            data={node}
+            formDefinition={formDefinition}
+            graph={graph}
+            selectedNodeId={selectedNodeId}
+            handleSelectNode={handleSelectNode}
+            nodePrefillMap={prefillMap[node.nodeId] ?? {}}
+            onSetPrefill={onSetPrefill}
+            onClearPrefill={onClearPrefill}
+          />
+        );
       })}
     </>
   );
