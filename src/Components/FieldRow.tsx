@@ -1,4 +1,5 @@
-import type { FormField, PrefillSource } from "../Graph/createGraph";
+import type { FormField } from "../Graph/graphTypes";
+import type { PrefillSource } from "../PrefillMap";
 
 type Props = {
   field: FormField;
@@ -8,6 +9,10 @@ type Props = {
 };
 
 export function FieldRow({ field, currentMapping, onClick, onClear }: Props) {
+  if (field.avantosType === "button") {
+    return undefined;
+  }
+
   return (
     <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
       <span style={{ flex: 1 }}>{field.label}</span>
