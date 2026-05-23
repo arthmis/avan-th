@@ -43,6 +43,38 @@ export function graphFromData(data: RawActionBlueprintGraph): {
 
   const graph: Graph = { nodes, edges, reverseAdj };
 
+  const globalDataSources = new Map<string, GlobalDataSource>([
+    [
+      "user_context",
+      {
+        sourceType: "global",
+        data: {
+          label: "User Context",
+          fields: [
+            { key: "first_name", label: "First Name", primitiveType: "string" },
+            { key: "last_name", label: "Last Name", primitiveType: "string" },
+            { key: "email", label: "Email", primitiveType: "string" },
+            { key: "role", label: "Role", primitiveType: "string" },
+          ],
+        },
+      },
+    ],
+    [
+      "organization",
+      {
+        sourceType: "global",
+        data: {
+          label: "Organization",
+          fields: [
+            { key: "org_name", label: "Name", primitiveType: "string" },
+            { key: "org_id", label: "ID", primitiveType: "string" },
+            { key: "plan", label: "Plan", primitiveType: "string" },
+          ],
+        },
+      },
+    ],
+  ]);
+
   const blueprint: Blueprint = {
     id: data.id,
     tenantId: data.tenant_id,
@@ -51,6 +83,7 @@ export function graphFromData(data: RawActionBlueprintGraph): {
     category: data.category,
     nodeById,
     forms,
+    globalDataSources,
   };
 
   return { graph, blueprint };
@@ -146,4 +179,26 @@ export interface Blueprint {
   category: string;
   nodeById: Map<NodeId, GraphNode>;
   forms: Map<string, FormDefinition>;
+  globalDataSources: Map<string, GlobalDataSource>;
 }
+
+export type PrefillDataSource = NodeDataSource | GlobalDataSource;
+
+export type NodeDataSource = {
+  sourceType: "node";
+  data: GraphNode;
+};
+
+export type GlobalDataSource = {
+  sourceType: "global";
+  data: {
+    label: string;
+    fields: DataSourceFields[];
+  };
+};
+
+export type DataSourceFields = {
+  key: string;
+  label: string;
+  primitiveType: RawFieldJsonType;
+};

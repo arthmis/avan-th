@@ -1,13 +1,9 @@
-// ─── Prefill ─────────────────────────────────────────────────────────────────
-
 import type { Blueprint, Graph, GraphNode, NodeId } from "./graph";
 
 export interface AncestorNode {
   node: GraphNode;
 }
 
-// upstream node should only return node id
-// registry will provide the actual data like FormDefinition or whatever the type of node it is
 export function getAncestorNodes(
   nodeId: NodeId,
   graph: Graph,

@@ -1,4 +1,4 @@
-import type { Blueprint, GraphNode } from "../Graph/graph";
+import type { Blueprint, GlobalDataSource, NodeDataSource, PrefillDataSource } from "../Graph/graph";
 import type { AncestorNode } from "../Graph/traverseGraph";
 import type { PrefillSource } from "../PrefillMap";
 
@@ -19,14 +19,31 @@ export function PrefillModal({ blueprint, upstreamNodes, onSelect, onClose }: Pr
         </button>
       </div>
 
-      {upstreamNodes.length === 0 && <p>No upstream data sources available.</p>}
+      {upstreamNodes.length === 0 && blueprint.globalDataSources.size === 0 && (
+        <p>No upstream data sources available.</p>
+      )}
+      {Array.from(blueprint.globalDataSources, ([key, dataSource]) => {
+        return (
+          <DataSourceView
+            key={key}
+            blueprint={blueprint}
+            dataSource={dataSource}
+            onSelect={onSelect}
+            onClose={onClose}
+          />
+        );
+      })}
 
       {upstreamNodes.map(({ node }) => {
+        const nodeDataSource: NodeDataSource = {
+          sourceType: "node",
+          data: node,
+        };
         return (
           <DataSourceView
             key={node.nodeId}
             blueprint={blueprint}
-            node={node}
+            dataSource={nodeDataSource}
             onSelect={onSelect}
             onClose={onClose}
           />
@@ -36,42 +53,85 @@ export function PrefillModal({ blueprint, upstreamNodes, onSelect, onClose }: Pr
   );
 }
 
-// this should not make the assumption that a node is the source of data
-// this could be global data like Action Properties and Client Organization Properties
 type DataSourceViewProps = {
   blueprint: Blueprint;
-  node: GraphNode;
+  dataSource: PrefillDataSource;
   onSelect: (source: PrefillSource) => void;
   onClose: () => void;
 };
 
-function DataSourceView({ blueprint, node, onSelect }: DataSourceViewProps) {
-  switch (node.data.componentType) {
+function DataSourceView({ blueprint, dataSource, onSelect }: DataSourceViewProps) {
+  switch (dataSource.sourceType) {
+    case "node":
+      return (
+        <NodeDataSourceView blueprint={blueprint} dataSource={dataSource} onSelect={onSelect} />
+      );
+    case "global":
+      return <GlobalDataSourceView dataSource={dataSource} onSelect={onSelect} />;
+    default:
+      return undefined;
+  }
+}
+
+type NodeDataSourceViewProps = {
+  blueprint: Blueprint;
+  dataSource: NodeDataSource;
+  onSelect: (source: PrefillSource) => void;
+};
+
+function NodeDataSourceView({ blueprint, dataSource, onSelect }: NodeDataSourceViewProps) {
+  switch (dataSource.data.data.componentType) {
     case "form": {
-      const formDefinition = blueprint.forms.get(node.data.componentId);
+      const formDefinition = blueprint.forms.get(dataSource.data.data.componentId);
       if (!formDefinition) {
         return undefined;
       }
 
       return formDefinition.fields.map((f) => (
         <button
-          key={`${node.nodeId}-${f.key}`}
+          key={`${dataSource.data.nodeId}-${f.key}`}
           type="button"
           style={{ display: "block", margin: "2px 0" }}
           onClick={() =>
             onSelect({
-              sourceNodeId: node.nodeId,
-              sourceName: node.name,
+              sourceType: "node",
+              sourceNodeId: dataSource.data.nodeId,
+              sourceName: dataSource.data.name,
               fieldKey: f.key,
               fieldLabel: f.label,
             })
           }
         >
-          {node.name} &gt; {f.label}
+          {dataSource.data.name} &gt; {f.label}
         </button>
       ));
     }
     default:
       return undefined;
   }
+}
+
+type GlobalDataSourceViewProps = {
+  dataSource: GlobalDataSource;
+  onSelect: (source: PrefillSource) => void;
+};
+
+function GlobalDataSourceView({ dataSource, onSelect }: GlobalDataSourceViewProps) {
+  return dataSource.data.fields.map((f) => (
+    <button
+      key={f.key}
+      type="button"
+      style={{ display: "block", margin: "2px 0" }}
+      onClick={() =>
+        onSelect({
+          sourceType: "global",
+          sourceName: dataSource.data.label,
+          fieldKey: f.key,
+          fieldLabel: f.label,
+        })
+      }
+    >
+      {dataSource.data.label} &gt; {f.label}
+    </button>
+  ));
 }
