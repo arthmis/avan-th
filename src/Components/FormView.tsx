@@ -44,7 +44,6 @@ export function FormView({
       {modalField && (
         <PrefillModal
           graph={graph}
-          field={modalField}
           upstreamNodes={upstreamNodes}
           onSelect={(source) => {
             onSetPrefill(modalField.key, source);

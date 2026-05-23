@@ -22,11 +22,6 @@ export function FormList({
   return (
     <>
       {graph.nodes.map((node) => {
-        const formDefinition = graph.forms.get(node.data.componentId);
-        if (!formDefinition) {
-          return undefined;
-        }
-
         return (
           <NodeView
             key={node.nodeId}
