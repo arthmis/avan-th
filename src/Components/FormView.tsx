@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { ActionBlueprintGraph, FormDefinition, GraphNode } from "../Graph/graphTypes";
+import type { Blueprint, FormDefinition, Graph, GraphNode } from "../Graph/graphTypes";
 import { getAncestorNodes } from "../Graph/traverseGraph";
 import type { PrefillSource } from "../PrefillMap";
 import { FieldRow } from "./FieldRow";
@@ -8,7 +8,8 @@ import { PrefillModal } from "./PrefillModal";
 type Props = {
   node: GraphNode;
   form: FormDefinition;
-  graph: ActionBlueprintGraph;
+  graph: Graph;
+  blueprint: Blueprint;
   nodePrefillMap: Record<string, PrefillSource | undefined>;
   onSetPrefill: (fieldKey: string, source: PrefillSource) => void;
   onClearPrefill: (fieldKey: string) => void;
@@ -18,6 +19,7 @@ export function FormView({
   node,
   form,
   graph,
+  blueprint,
   nodePrefillMap,
   onSetPrefill,
   onClearPrefill,
@@ -25,8 +27,8 @@ export function FormView({
   const [modalFieldKey, setModalFieldKey] = useState<string | undefined>(undefined);
 
   const upstreamNodes = useMemo(() => {
-    return getAncestorNodes(node.nodeId, graph);
-  }, [node.nodeId, graph]);
+    return getAncestorNodes(node.nodeId, graph, blueprint);
+  }, [node.nodeId, graph, blueprint]);
   const modalField = form.fields.find((f) => f.key === modalFieldKey) ?? undefined;
 
   return (
@@ -43,7 +45,7 @@ export function FormView({
 
       {modalField && (
         <PrefillModal
-          graph={graph}
+          blueprint={blueprint}
           upstreamNodes={upstreamNodes}
           onSelect={(source) => {
             onSetPrefill(modalField.key, source);

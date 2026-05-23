@@ -42,15 +42,18 @@ export interface GraphEdge {
 
 export type NodeComponent = FormDefinition;
 
-export interface ActionBlueprintGraph {
+export interface Graph {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  reverseAdj: Map<string, string[]>;
+}
+
+export interface Blueprint {
   id: string;
   tenantId: string;
   name: string;
   description: string;
   category: string;
-  nodes: GraphNode[];
-  edges: GraphEdge[];
-  reverseAdj: Map<string, string[]>;
   nodeById: Map<string, GraphNode>;
   forms: Map<string, FormDefinition>;
 }

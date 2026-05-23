@@ -6,14 +6,18 @@ import type {
   RawForm,
 } from "../formsFetch";
 import type {
-  ActionBlueprintGraph,
+  Blueprint,
   FormDefinition,
   FormField,
+  Graph,
   GraphEdge,
   GraphNode,
 } from "./graphTypes";
 
-export function graphFromData(data: RawActionBlueprintGraph): ActionBlueprintGraph {
+export function graphFromData(data: RawActionBlueprintGraph): {
+  graph: Graph;
+  blueprint: Blueprint;
+} {
   const nodes: GraphNode[] = data.nodes.map((node) => ({
     nodeId: node.id,
     nodeType: node.type,
@@ -44,18 +48,19 @@ export function graphFromData(data: RawActionBlueprintGraph): ActionBlueprintGra
     reverseAdj.set(edge.target, list);
   }
 
-  return {
+  const graph: Graph = { nodes, edges, reverseAdj };
+
+  const blueprint: Blueprint = {
     id: data.id,
     tenantId: data.tenant_id,
     name: data.name,
     description: data.description,
     category: data.category,
-    nodes,
-    edges,
-    forms,
-    reverseAdj,
     nodeById,
+    forms,
   };
+
+  return { graph, blueprint };
 }
 
 function mapFormFields(

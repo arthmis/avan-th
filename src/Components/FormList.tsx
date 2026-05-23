@@ -1,9 +1,10 @@
-import type { ActionBlueprintGraph } from "../Graph/graphTypes";
+import type { Blueprint, Graph } from "../Graph/graphTypes";
 import type { PrefillMap, PrefillSource } from "../PrefillMap";
 import { NodeView } from "./NodeView";
 
 type Props = {
-  graph: ActionBlueprintGraph;
+  graph: Graph;
+  blueprint: Blueprint;
   selectedNodeId: string | undefined;
   handleSelectNode: (nodeId: string) => void;
   prefillMap: PrefillMap;
@@ -13,6 +14,7 @@ type Props = {
 
 export function FormList({
   graph,
+  blueprint,
   selectedNodeId,
   handleSelectNode,
   prefillMap,
@@ -27,6 +29,7 @@ export function FormList({
             key={node.nodeId}
             data={node}
             graph={graph}
+            blueprint={blueprint}
             selectedNodeId={selectedNodeId}
             handleSelectNode={handleSelectNode}
             nodePrefillMap={prefillMap[node.nodeId] ?? {}}

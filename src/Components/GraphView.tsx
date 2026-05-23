@@ -14,7 +14,8 @@ export function GraphView() {
     case "success":
       return (
         <FormList
-          graph={graphFetchState.data}
+          graph={graphFetchState.data.graph}
+          blueprint={graphFetchState.data.blueprint}
           selectedNodeId={selectedNodeId}
           handleSelectNode={handleSelectNode}
           prefillMap={prefillMap}

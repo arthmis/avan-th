@@ -1,11 +1,12 @@
-import type { ActionBlueprintGraph, GraphNode } from "../Graph/graphTypes";
+import type { Blueprint, Graph, GraphNode } from "../Graph/graphTypes";
 import type { PrefillSource } from "../PrefillMap";
 import classes from "./Form.module.css";
 import { FormView } from "./FormView";
 
 type Props = {
   data: GraphNode;
-  graph: ActionBlueprintGraph;
+  graph: Graph;
+  blueprint: Blueprint;
   selectedNodeId: string | undefined;
   handleSelectNode: (nodeId: string) => void;
   nodePrefillMap: Record<string, PrefillSource | undefined>;
@@ -16,6 +17,7 @@ type Props = {
 export function NodeView({
   data,
   graph,
+  blueprint,
   selectedNodeId,
   handleSelectNode,
   nodePrefillMap,
@@ -31,6 +33,7 @@ export function NodeView({
         <NodeComponentView
           data={data}
           graph={graph}
+          blueprint={blueprint}
           nodePrefillMap={nodePrefillMap}
           onSetPrefill={onSetPrefill}
           onClearPrefill={onClearPrefill}
@@ -42,7 +45,8 @@ export function NodeView({
 
 type NodeComponentViewProps = {
   data: GraphNode;
-  graph: ActionBlueprintGraph;
+  graph: Graph;
+  blueprint: Blueprint;
   nodePrefillMap: Record<string, PrefillSource | undefined>;
   onSetPrefill: (nodeId: string, fieldKey: string, source: PrefillSource) => void;
   onClearPrefill: (nodeId: string, fieldKey: string) => void;
@@ -51,13 +55,14 @@ type NodeComponentViewProps = {
 function NodeComponentView({
   data: node,
   graph,
+  blueprint,
   nodePrefillMap,
   onSetPrefill,
   onClearPrefill,
 }: NodeComponentViewProps) {
   switch (node.data.componentType) {
     case "form": {
-      const formDefinition = graph.forms.get(node.data.componentId);
+      const formDefinition = blueprint.forms.get(node.data.componentId);
       if (!formDefinition) {
         return undefined;
       }
@@ -67,6 +72,7 @@ function NodeComponentView({
           node={node}
           form={formDefinition}
           graph={graph}
+          blueprint={blueprint}
           nodePrefillMap={nodePrefillMap}
           onSetPrefill={(fieldKey, source) => onSetPrefill(node.nodeId, fieldKey, source)}
           onClearPrefill={(fieldKey) => onClearPrefill(node.nodeId, fieldKey)}

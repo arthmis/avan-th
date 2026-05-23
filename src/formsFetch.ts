@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { graphFromData } from "./Graph/createGraph";
-import type { ActionBlueprintGraph } from "./Graph/graphTypes";
+import type { Blueprint, Graph } from "./Graph/graphTypes";
 
 export function useFetchGraph(tenantId: string, actionBlueprintId: string) {
   const [fetchState, setFetchState] = useState<FetchState>({ type: "loading" });
@@ -11,8 +11,8 @@ export function useFetchGraph(tenantId: string, actionBlueprintId: string) {
       try {
         const response = await fetch(url);
         const json: RawActionBlueprintGraph = await response.json();
-        const forms = graphFromData(json);
-        setFetchState({ type: "success", data: forms });
+        const { graph, blueprint } = graphFromData(json);
+        setFetchState({ type: "success", data: { graph, blueprint } });
       } catch {
         setFetchState({
           type: "error",
@@ -31,7 +31,7 @@ export type FetchState = FetchSuccess | FetchError | FetchLoading;
 
 export type FetchSuccess = {
   type: "success";
-  data: ActionBlueprintGraph;
+  data: { graph: Graph; blueprint: Blueprint };
 };
 
 export type FetchError = {

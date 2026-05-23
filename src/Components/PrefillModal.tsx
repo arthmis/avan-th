@@ -1,15 +1,15 @@
-import type { ActionBlueprintGraph, GraphNode } from "../Graph/graphTypes";
+import type { Blueprint, GraphNode } from "../Graph/graphTypes";
 import type { AncestorNode } from "../Graph/traverseGraph";
 import type { PrefillSource } from "../PrefillMap";
 
 type Props = {
-  graph: ActionBlueprintGraph;
+  blueprint: Blueprint;
   upstreamNodes: AncestorNode[];
   onSelect: (source: PrefillSource) => void;
   onClose: () => void;
 };
 
-export function PrefillModal({ graph, upstreamNodes, onSelect, onClose }: Props) {
+export function PrefillModal({ blueprint, upstreamNodes, onSelect, onClose }: Props) {
   return (
     <div style={{ border: "1px solid #888", padding: 12, marginTop: 8 }}>
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
@@ -25,7 +25,7 @@ export function PrefillModal({ graph, upstreamNodes, onSelect, onClose }: Props)
         return (
           <DataSourceView
             key={node.nodeId}
-            graph={graph}
+            blueprint={blueprint}
             node={node}
             onSelect={onSelect}
             onClose={onClose}
@@ -37,16 +37,16 @@ export function PrefillModal({ graph, upstreamNodes, onSelect, onClose }: Props)
 }
 
 type DataSourceViewProps = {
-  graph: ActionBlueprintGraph;
+  blueprint: Blueprint;
   node: GraphNode;
   onSelect: (source: PrefillSource) => void;
   onClose: () => void;
 };
 
-function DataSourceView({ graph, node, onSelect }: DataSourceViewProps) {
+function DataSourceView({ blueprint, node, onSelect }: DataSourceViewProps) {
   switch (node.data.componentType) {
     case "form": {
-      const formDefinition = graph.forms.get(node.data.componentId);
+      const formDefinition = blueprint.forms.get(node.data.componentId);
       if (!formDefinition) {
         return undefined;
       }
