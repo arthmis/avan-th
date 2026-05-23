@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import type { Blueprint, FormDefinition, Graph, GraphNode } from "../Graph/graphTypes";
+import type { Blueprint, FormDefinition, Graph, GraphNode } from "../Graph/graph";
 import { getAncestorNodes } from "../Graph/traverseGraph";
 import type { PrefillSource } from "../PrefillMap";
 import { FieldRow } from "./FieldRow";

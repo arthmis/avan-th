@@ -1,25 +1,18 @@
 import type {
+  AvantosFieldType,
   RawActionBlueprintGraph,
   RawDynamicFieldConfig,
   RawFieldJsonType,
   RawFieldSchema,
   RawForm,
 } from "../formsFetch";
-import type {
-  Blueprint,
-  FormDefinition,
-  FormField,
-  Graph,
-  GraphEdge,
-  GraphNode,
-} from "./graphTypes";
 
 export function graphFromData(data: RawActionBlueprintGraph): {
   graph: Graph;
   blueprint: Blueprint;
 } {
   const nodes: GraphNode[] = data.nodes.map((node) => ({
-    nodeId: node.id,
+    nodeId: makeNodeId(node.id),
     nodeType: node.type,
     name: node.data.name,
     data: {
@@ -28,12 +21,12 @@ export function graphFromData(data: RawActionBlueprintGraph): {
       componentType: node.data.component_type,
     },
     position: node.position,
-    prerequisites: node.data.prerequisites,
+    prerequisites: node.data.prerequisites as NodeId[],
   }));
 
   const edges: GraphEdge[] = data.edges.map((edge) => ({
-    source: edge.source,
-    target: edge.target,
+    source: makeNodeId(edge.source),
+    target: makeNodeId(edge.target),
   }));
 
   const formsById: FormDefinition[] = data.forms.map(mapFormDefinition);
@@ -41,7 +34,7 @@ export function graphFromData(data: RawActionBlueprintGraph): {
 
   const nodeById = new Map(nodes.map((node) => [node.nodeId, node]));
 
-  const reverseAdj = new Map<string, string[]>();
+  const reverseAdj = new Map<NodeId, NodeId[]>();
   for (const edge of edges) {
     const list = reverseAdj.get(edge.target) ?? [];
     list.push(edge.source);
@@ -89,4 +82,68 @@ function mapFormDefinition(raw: RawForm): FormDefinition {
     isReusable: raw.is_reusable,
     fields: mapFormFields(raw.field_schema, raw.dynamic_field_config),
   };
+}
+
+export type NodeId = string & { readonly __brand: "NodeId" };
+
+function makeNodeId(id: string): NodeId {
+  return id as NodeId;
+}
+
+export interface FormField {
+  key: string;
+  label: string;
+  avantosType: AvantosFieldType;
+  jsonType: RawFieldJsonType;
+  format?: string;
+  isRequired: boolean;
+  isDynamic: boolean;
+}
+
+export interface FormDefinition {
+  id: string;
+  name: string;
+  description: string;
+  isReusable: boolean;
+  fields: FormField[];
+}
+
+export type NodeType = "form";
+
+export interface GraphNode {
+  nodeId: NodeId;
+  nodeType: NodeType;
+  data: NodeData;
+  name: string;
+  position: { x: number; y: number };
+  prerequisites: NodeId[];
+}
+
+export type NodeData = {
+  componentId: string;
+  componentKey: string;
+  componentType: "form";
+};
+
+export interface GraphEdge {
+  source: NodeId;
+  target: NodeId;
+}
+
+export type NodeComponent = FormDefinition;
+
+export interface Graph {
+  nodes: GraphNode[];
+  edges: GraphEdge[];
+  reverseAdj: Map<NodeId, NodeId[]>;
+}
+
+export interface Blueprint {
+  id: string;
+  tenantId: string;
+  name: string;
+  description: string;
+  category: string;
+  nodeById: Map<NodeId, GraphNode>;
+  forms: Map<string, FormDefinition>;
 }

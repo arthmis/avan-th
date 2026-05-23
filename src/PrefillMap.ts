@@ -1,7 +1,8 @@
 import { useState } from "react";
+import type { NodeId } from "./Graph/graph";
 
 export interface PrefillSource {
-  sourceNodeId: string;
+  sourceNodeId: NodeId;
   sourceName: string;
   fieldKey: string;
   fieldLabel: string;
@@ -12,19 +13,19 @@ export interface PrefillSource {
 // field schema: describes what the data looks like for the fieldKey
 // this is to check if the source field is compatible with the destination field
 
-export type PrefillMap = Record<string, Record<string, PrefillSource | undefined>>;
+export type PrefillMap = Record<NodeId, Record<string, PrefillSource | undefined>>;
 
 export function usePrefillMap() {
   const [prefillMap, setPrefillMap] = useState<PrefillMap>({});
 
-  const handleSetPrefill = (nodeId: string, fieldKey: string, source: PrefillSource) => {
+  const handleSetPrefill = (nodeId: NodeId, fieldKey: string, source: PrefillSource) => {
     setPrefillMap((prev) => ({
       ...prev,
       [nodeId]: { ...(prev[nodeId] ?? {}), [fieldKey]: source },
     }));
   };
 
-  const handleClearPrefill = (nodeId: string, fieldKey: string) => {
+  const handleClearPrefill = (nodeId: NodeId, fieldKey: string) => {
     setPrefillMap((prev) => ({
       ...prev,
       [nodeId]: { ...(prev[nodeId] ?? {}), [fieldKey]: undefined },

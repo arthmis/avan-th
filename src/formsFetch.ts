@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
-import { graphFromData } from "./Graph/createGraph";
-import type { Blueprint, Graph } from "./Graph/graphTypes";
+import { type Blueprint, type Graph, graphFromData } from "./Graph/graph";
 
 export function useFetchGraph(tenantId: string, actionBlueprintId: string) {
   const [fetchState, setFetchState] = useState<FetchState>({ type: "loading" });

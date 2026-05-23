@@ -1,4 +1,4 @@
-import type { Blueprint, GraphNode } from "../Graph/graphTypes";
+import type { Blueprint, GraphNode } from "../Graph/graph";
 import type { AncestorNode } from "../Graph/traverseGraph";
 import type { PrefillSource } from "../PrefillMap";
 
@@ -36,6 +36,8 @@ export function PrefillModal({ blueprint, upstreamNodes, onSelect, onClose }: Pr
   );
 }
 
+// this should not make the assumption that a node is the source of data
+// this could be global data like Action Properties and Client Organization Properties
 type DataSourceViewProps = {
   blueprint: Blueprint;
   node: GraphNode;

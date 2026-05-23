@@ -1,15 +1,15 @@
-import type { Blueprint, Graph } from "../Graph/graphTypes";
+import type { Blueprint, Graph, NodeId } from "../Graph/graph";
 import type { PrefillMap, PrefillSource } from "../PrefillMap";
 import { NodeView } from "./NodeView";
 
 type Props = {
   graph: Graph;
   blueprint: Blueprint;
-  selectedNodeId: string | undefined;
-  handleSelectNode: (nodeId: string) => void;
+  selectedNodeId: NodeId | undefined;
+  handleSelectNode: (nodeId: NodeId) => void;
   prefillMap: PrefillMap;
-  onSetPrefill: (nodeId: string, fieldKey: string, source: PrefillSource) => void;
-  onClearPrefill: (nodeId: string, fieldKey: string) => void;
+  onSetPrefill: (nodeId: NodeId, fieldKey: string, source: PrefillSource) => void;
+  onClearPrefill: (nodeId: NodeId, fieldKey: string) => void;
 };
 
 export function FormList({

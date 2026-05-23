@@ -1,4 +1,4 @@
-import type { Blueprint, Graph, GraphNode } from "../Graph/graphTypes";
+import type { Blueprint, Graph, GraphNode, NodeId } from "../Graph/graph";
 import type { PrefillSource } from "../PrefillMap";
 import classes from "./Form.module.css";
 import { FormView } from "./FormView";
@@ -7,11 +7,11 @@ type Props = {
   data: GraphNode;
   graph: Graph;
   blueprint: Blueprint;
-  selectedNodeId: string | undefined;
-  handleSelectNode: (nodeId: string) => void;
+  selectedNodeId: NodeId | undefined;
+  handleSelectNode: (nodeId: NodeId) => void;
   nodePrefillMap: Record<string, PrefillSource | undefined>;
-  onSetPrefill: (nodeId: string, fieldKey: string, source: PrefillSource) => void;
-  onClearPrefill: (nodeId: string, fieldKey: string) => void;
+  onSetPrefill: (nodeId: NodeId, fieldKey: string, source: PrefillSource) => void;
+  onClearPrefill: (nodeId: NodeId, fieldKey: string) => void;
 };
 
 export function NodeView({
@@ -48,8 +48,8 @@ type NodeComponentViewProps = {
   graph: Graph;
   blueprint: Blueprint;
   nodePrefillMap: Record<string, PrefillSource | undefined>;
-  onSetPrefill: (nodeId: string, fieldKey: string, source: PrefillSource) => void;
-  onClearPrefill: (nodeId: string, fieldKey: string) => void;
+  onSetPrefill: (nodeId: NodeId, fieldKey: string, source: PrefillSource) => void;
+  onClearPrefill: (nodeId: NodeId, fieldKey: string) => void;
 };
 
 function NodeComponentView({
