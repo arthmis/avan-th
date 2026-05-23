@@ -1,16 +1,17 @@
 // ─── Prefill ─────────────────────────────────────────────────────────────────
 
-import type { ActionBlueprintGraph, FormDefinition, GraphNode } from "./graphTypes";
+import type { ActionBlueprintGraph, GraphNode } from "./graphTypes";
 
-export interface UpstreamNode {
+export interface AncestorNode {
   node: GraphNode;
-  form: FormDefinition;
 }
 
-export function getAncestorNodes(nodeId: string, graph: ActionBlueprintGraph): UpstreamNode[] {
+// upstream node should only return node id
+// registry will provide the actual data like FormDefinition or whatever the type of node it is
+export function getAncestorNodes(nodeId: string, graph: ActionBlueprintGraph): AncestorNode[] {
   const { reverseAdj, nodeById, forms } = graph;
 
-  const result: UpstreamNode[] = [];
+  const result: AncestorNode[] = [];
   const visited = new Set<string>();
   const queue: string[] = [nodeId];
 
@@ -22,9 +23,9 @@ export function getAncestorNodes(nodeId: string, graph: ActionBlueprintGraph): U
           visited.add(parentId);
           const node = nodeById.get(parentId);
           if (node) {
-            const form = forms.get(node.formId);
+            const form = forms.get(node.data.componentId);
             if (form) {
-              result.push({ node, form });
+              result.push({ node });
             }
           }
           queue.push(parentId);

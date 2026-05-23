@@ -18,19 +18,29 @@ export interface FormDefinition {
   fields: FormField[];
 }
 
+export type NodeType = "form";
+
 export interface GraphNode {
   nodeId: string;
-  componentId: string;
-  formId: string;
+  nodeType: NodeType;
+  data: NodeData;
   name: string;
   position: { x: number; y: number };
   prerequisites: string[];
 }
 
+export type NodeData = {
+  componentId: string;
+  componentKey: string;
+  componentType: "form";
+};
+
 export interface GraphEdge {
   source: string;
   target: string;
 }
+
+export type NodeComponent = FormDefinition;
 
 export interface ActionBlueprintGraph {
   id: string;

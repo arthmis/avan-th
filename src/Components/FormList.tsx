@@ -22,7 +22,7 @@ export function FormList({
   return (
     <>
       {graph.nodes.map((node) => {
-        const formDefinition = graph.forms.get(node.formId);
+        const formDefinition = graph.forms.get(node.data.componentId);
         if (!formDefinition) {
           return undefined;
         }
@@ -31,7 +31,6 @@ export function FormList({
           <NodeView
             key={node.nodeId}
             data={node}
-            formDefinition={formDefinition}
             graph={graph}
             selectedNodeId={selectedNodeId}
             handleSelectNode={handleSelectNode}

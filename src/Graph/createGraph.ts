@@ -16,9 +16,13 @@ import type {
 export function graphFromData(data: RawActionBlueprintGraph): ActionBlueprintGraph {
   const nodes: GraphNode[] = data.nodes.map((node) => ({
     nodeId: node.id,
-    componentId: node.data.component_id,
-    formId: node.data.component_id,
+    nodeType: node.type,
     name: node.data.name,
+    data: {
+      componentId: node.data.component_id,
+      componentKey: node.data.component_key,
+      componentType: node.data.component_type,
+    },
     position: node.position,
     prerequisites: node.data.prerequisites,
   }));

@@ -19,7 +19,7 @@ export function FieldRow({ field, currentMapping, onClick, onClear }: Props) {
       {currentMapping ? (
         <>
           <span style={{ fontStyle: "italic" }}>
-            {currentMapping.sourceFormName} &gt; {currentMapping.fieldLabel}
+            {currentMapping.sourceName} &gt; {currentMapping.fieldLabel}
           </span>
           <button type="button" onClick={onClear} aria-label="Clear prefill">
             ✕

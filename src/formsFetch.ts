@@ -181,9 +181,12 @@ export type RawDynamicFieldConfig = Record<string, RawDynamicFieldEntry>;
 
 // ─── Form ─────────────────────────────────────────────────────────────────────
 
+export type RawComponent = RawForm;
+
 export type RawForm = {
   id: string;
   name: string;
+  component_type: "form";
   description: string;
   is_reusable: boolean;
   field_schema: RawFieldSchema;
