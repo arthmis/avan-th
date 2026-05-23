@@ -1,5 +1,7 @@
-import type { FormField } from "../Graph/graphTypes";
+import clsx from "clsx";
+import type { FormField } from "../Graph/graph";
 import type { PrefillSource } from "../PrefillMap";
+import fieldRowClasses from "./FieldRow.module.css";
 
 type Props = {
   field: FormField;
@@ -13,23 +15,30 @@ export function FieldRow({ field, currentMapping, onClick, onClear }: Props) {
     return undefined;
   }
 
+  const button = currentMapping ? (
+    <button type="button" onClick={onClear} aria-label="Clear prefill">
+      ✕
+    </button>
+  ) : (
+    <button type="button" onClick={onClick}>
+      Select Source
+    </button>
+  );
+
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 8, padding: "4px 0" }}>
-      <span style={{ flex: 1 }}>{field.label}</span>
-      {currentMapping ? (
-        <>
-          <span style={{ fontStyle: "italic" }}>
-            {currentMapping.sourceName} &gt; {currentMapping.fieldLabel}
+    <div className={clsx(fieldRowClasses.row, { [fieldRowClasses.borderActive]: currentMapping })}>
+      <p>
+        {field.label}
+        {currentMapping && (
+          <span>
+            :
+            <span style={{ paddingLeft: "4px" }}>
+              {currentMapping.sourceName}.{currentMapping.fieldLabel}
+            </span>
           </span>
-          <button type="button" onClick={onClear} aria-label="Clear prefill">
-            ✕
-          </button>
-        </>
-      ) : (
-        <button type="button" onClick={onClick}>
-          Add prefill
-        </button>
-      )}
+        )}
+      </p>
+      {button}
     </div>
   );
 }

@@ -3,6 +3,7 @@ import type { Blueprint, FormDefinition, Graph, GraphNode } from "../Graph/graph
 import { getAncestorNodes } from "../Graph/traverseGraph";
 import type { PrefillSource } from "../PrefillMap";
 import { FieldRow } from "./FieldRow";
+import formClasses from "./Form.module.css";
 import { PrefillModal } from "./PrefillModal";
 
 type Props = {
@@ -32,16 +33,19 @@ export function FormView({
   const modalField = form.fields.find((f) => f.key === modalFieldKey) ?? undefined;
 
   return (
-    <div style={{ padding: "8px 0" }}>
-      {form.fields.map((field) => (
-        <FieldRow
-          key={field.key}
-          field={field}
-          currentMapping={nodePrefillMap[field.key] ?? undefined}
-          onClick={() => setModalFieldKey(field.key)}
-          onClear={() => onClearPrefill(field.key)}
-        />
-      ))}
+    <>
+      <ul className={formClasses.fieldList}>
+        {form.fields.map((field) => (
+          <li key={field.key} className={formClasses.listStyle}>
+            <FieldRow
+              field={field}
+              currentMapping={nodePrefillMap[field.key] ?? undefined}
+              onClick={() => setModalFieldKey(field.key)}
+              onClear={() => onClearPrefill(field.key)}
+            />
+          </li>
+        ))}
+      </ul>
 
       {modalField && (
         <PrefillModal
@@ -54,6 +58,6 @@ export function FormView({
           onClose={() => setModalFieldKey(undefined)}
         />
       )}
-    </div>
+    </>
   );
 }

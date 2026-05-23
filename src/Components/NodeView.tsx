@@ -1,7 +1,7 @@
 import type { Blueprint, Graph, GraphNode, NodeId } from "../Graph/graph";
 import type { PrefillSource } from "../PrefillMap";
-import classes from "./Form.module.css";
 import { FormView } from "./FormView";
+import nodeClasses from "./NodeView.module.css";
 
 type Props = {
   data: GraphNode;
@@ -25,8 +25,12 @@ export function NodeView({
   onClearPrefill,
 }: Props) {
   return (
-    <div className={classes.border}>
-      <button type="button" onClick={() => handleSelectNode(data.nodeId)}>
+    <div className={nodeClasses.node}>
+      <button
+        className={nodeClasses.button}
+        type="button"
+        onClick={() => handleSelectNode(data.nodeId)}
+      >
         {data.name}
       </button>
       {selectedNodeId === data.nodeId && (

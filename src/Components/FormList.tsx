@@ -1,5 +1,6 @@
 import type { Blueprint, Graph, NodeId } from "../Graph/graph";
 import type { PrefillMap, PrefillSource } from "../PrefillMap";
+import formListClasses from "./FormList.module.css";
 import { NodeView } from "./NodeView";
 
 type Props = {
@@ -22,22 +23,23 @@ export function FormList({
   onClearPrefill,
 }: Props) {
   return (
-    <>
+    <ul className={formListClasses.forms}>
       {graph.nodes.map((node) => {
         return (
-          <NodeView
-            key={node.nodeId}
-            data={node}
-            graph={graph}
-            blueprint={blueprint}
-            selectedNodeId={selectedNodeId}
-            handleSelectNode={handleSelectNode}
-            nodePrefillMap={prefillMap[node.nodeId] ?? {}}
-            onSetPrefill={onSetPrefill}
-            onClearPrefill={onClearPrefill}
-          />
+          <li key={node.nodeId}>
+            <NodeView
+              data={node}
+              graph={graph}
+              blueprint={blueprint}
+              selectedNodeId={selectedNodeId}
+              handleSelectNode={handleSelectNode}
+              nodePrefillMap={prefillMap[node.nodeId] ?? {}}
+              onSetPrefill={onSetPrefill}
+              onClearPrefill={onClearPrefill}
+            />
+          </li>
         );
       })}
-    </>
+    </ul>
   );
 }

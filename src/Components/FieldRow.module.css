@@ -1,0 +1,17 @@
+.row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 8px;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #eeeeee;
+    list-style: none;
+    border: 1px dashed #bbbbbb;
+    border-radius: 4px;
+}
+
+.borderActive {
+    border-radius: 16px;
+    border-style: solid;
+}
