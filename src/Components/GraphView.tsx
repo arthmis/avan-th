@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { useFetchGraph } from "../formsFetch";
-import type { NodeId } from "../Graph/graph";
+import { useSelectedNode } from "../hooks/useSelectedNode";
 import { usePrefillMap } from "../PrefillMap";
 import { NodeList } from "./NodeListView/NodeListView";
 
@@ -34,14 +33,4 @@ export function GraphView() {
         </>
       );
   }
-}
-
-function useSelectedNode() {
-  const [selectedNodeId, setSelectedForm] = useState<NodeId | undefined>();
-
-  const handleSelectNode = (nodeId: NodeId) => {
-    setSelectedForm((prev) => (prev === nodeId ? undefined : nodeId));
-  };
-
-  return { selectedNodeId, handleSelectNode };
 }
