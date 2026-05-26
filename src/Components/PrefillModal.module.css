@@ -1,0 +1,87 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+}
+
+.background {
+    background: rgb(10, 10, 10, 0.5);
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.dialog {
+    background: white;
+    max-width: 40rem;
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    max-height: 80svh;
+    overflow-y: auto;
+}
+
+.dataSource {
+    margin: 4px 0;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.dataSourceToggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 12px;
+    background: #dddddd;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: left;
+}
+
+.dataSourceToggle:hover {
+    background: #f3f4f6;
+}
+
+.chevron {
+    font-size: 0.7rem;
+    margin-left: auto;
+}
+
+.chevronOpen {
+    transform: rotate(180deg);
+}
+
+.fieldList {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 6px 8px;
+    background: white;
+}
+
+.fieldButton {
+    display: block;
+    width: 100%;
+    padding: 6px 10px;
+    background: none;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-align: left;
+}
+
+.fieldButton:hover {
+    background: #eff6ff;
+    border-color: #93c5fd;
+}

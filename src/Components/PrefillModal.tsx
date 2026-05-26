@@ -1,6 +1,8 @@
+import { useState } from "react";
 import type { Blueprint, GlobalDataSource, NodeDataSource, PrefillDataSource } from "../Graph/graph";
 import type { AncestorNode } from "../Graph/traverseGraph";
 import type { PrefillSource } from "../PrefillMap";
+import styles from "./PrefillModal.module.css";
 
 type Props = {
   blueprint: Blueprint;
@@ -11,19 +13,19 @@ type Props = {
 
 export function PrefillModal({ blueprint, upstreamNodes, onSelect, onClose }: Props) {
   return (
-    <div style={{ border: "1px solid #888", padding: 12, marginTop: 8 }}>
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
-        <strong>Select data element to map</strong>
-        <button type="button" onClick={onClose} aria-label="Close">
-          ✕
-        </button>
-      </div>
+    <div className={styles.background}>
+      <div className={styles.dialog}>
+        <div className={styles.header}>
+          <h2>Select data element to map</h2>
+          <button type="button" onClick={onClose} aria-label="Close">
+            ✕
+          </button>
+        </div>
 
-      {upstreamNodes.length === 0 && blueprint.globalDataSources.size === 0 && (
-        <p>No upstream data sources available.</p>
-      )}
-      {Array.from(blueprint.globalDataSources, ([key, dataSource]) => {
-        return (
+        {upstreamNodes.length === 0 && blueprint.globalDataSources.size === 0 && (
+          <p>No upstream data sources available.</p>
+        )}
+        {Array.from(blueprint.globalDataSources, ([key, dataSource]) => (
           <DataSourceView
             key={key}
             blueprint={blueprint}
@@ -31,24 +33,24 @@ export function PrefillModal({ blueprint, upstreamNodes, onSelect, onClose }: Pr
             onSelect={onSelect}
             onClose={onClose}
           />
-        );
-      })}
+        ))}
 
-      {upstreamNodes.map(({ node }) => {
-        const nodeDataSource: NodeDataSource = {
-          sourceType: "node",
-          data: node,
-        };
-        return (
-          <DataSourceView
-            key={node.nodeId}
-            blueprint={blueprint}
-            dataSource={nodeDataSource}
-            onSelect={onSelect}
-            onClose={onClose}
-          />
-        );
-      })}
+        {upstreamNodes.map(({ node }) => {
+          const nodeDataSource: NodeDataSource = {
+            sourceType: "node",
+            data: node,
+          };
+          return (
+            <DataSourceView
+              key={node.nodeId}
+              blueprint={blueprint}
+              dataSource={nodeDataSource}
+              onSelect={onSelect}
+              onClose={onClose}
+            />
+          );
+        })}
+      </div>
     </div>
   );
 }
@@ -80,6 +82,8 @@ type NodeDataSourceViewProps = {
 };
 
 function NodeDataSourceView({ blueprint, dataSource, onSelect }: NodeDataSourceViewProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   switch (dataSource.data.data.componentType) {
     case "form": {
       const formDefinition = blueprint.forms.get(dataSource.data.data.componentId);
@@ -87,24 +91,40 @@ function NodeDataSourceView({ blueprint, dataSource, onSelect }: NodeDataSourceV
         return undefined;
       }
 
-      return formDefinition.fields.map((f) => (
-        <button
-          key={`${dataSource.data.nodeId}-${f.key}`}
-          type="button"
-          style={{ display: "block", margin: "2px 0" }}
-          onClick={() =>
-            onSelect({
-              sourceType: "node",
-              sourceNodeId: dataSource.data.nodeId,
-              sourceName: dataSource.data.name,
-              fieldKey: f.key,
-              fieldLabel: f.label,
-            })
-          }
-        >
-          {dataSource.data.name} &gt; {f.label}
-        </button>
-      ));
+      return (
+        <div className={styles.dataSource}>
+          <button
+            type="button"
+            className={styles.dataSourceToggle}
+            onClick={() => setIsOpen((prev) => !prev)}
+          >
+            {dataSource.data.name}
+            <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ""}`}>▼</span>
+          </button>
+          {isOpen && (
+            <div className={styles.fieldList}>
+              {formDefinition.fields.map((f) => (
+                <button
+                  key={`${dataSource.data.nodeId}-${f.key}`}
+                  type="button"
+                  className={styles.fieldButton}
+                  onClick={() =>
+                    onSelect({
+                      sourceType: "node",
+                      sourceNodeId: dataSource.data.nodeId,
+                      sourceName: dataSource.data.name,
+                      fieldKey: f.key,
+                      fieldLabel: f.label,
+                    })
+                  }
+                >
+                  {f.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      );
     }
     default:
       return undefined;
@@ -117,21 +137,40 @@ type GlobalDataSourceViewProps = {
 };
 
 function GlobalDataSourceView({ dataSource, onSelect }: GlobalDataSourceViewProps) {
-  return dataSource.data.fields.map((f) => (
-    <button
-      key={f.key}
-      type="button"
-      style={{ display: "block", margin: "2px 0" }}
-      onClick={() =>
-        onSelect({
-          sourceType: "global",
-          sourceName: dataSource.data.label,
-          fieldKey: f.key,
-          fieldLabel: f.label,
-        })
-      }
-    >
-      {dataSource.data.label} &gt; {f.label}
-    </button>
-  ));
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <div className={styles.dataSource}>
+      <button
+        type="button"
+        className={styles.dataSourceToggle}
+        onClick={() => setIsOpen((prev) => !prev)}
+        aria-expanded={isOpen}
+      >
+        {dataSource.data.label}
+        <span className={`${styles.chevron} ${isOpen ? styles.chevronOpen : ""}`}>▼</span>
+      </button>
+      {isOpen && (
+        <div className={styles.fieldList}>
+          {dataSource.data.fields.map((f) => (
+            <button
+              key={f.key}
+              type="button"
+              className={styles.fieldButton}
+              onClick={() =>
+                onSelect({
+                  sourceType: "global",
+                  sourceName: dataSource.data.label,
+                  fieldKey: f.key,
+                  fieldLabel: f.label,
+                })
+              }
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
