@@ -1,7 +1,7 @@
-import type { Blueprint, Graph, NodeId } from "../Graph/graph";
-import type { PrefillMap, PrefillSource } from "../PrefillMap";
-import formListClasses from "./FormList.module.css";
-import { NodeView } from "./NodeView";
+import type { Blueprint, Graph, NodeId } from "../../Graph/graph";
+import type { PrefillMap, PrefillSource } from "../../PrefillMap";
+import formListClasses from "./NodeListView.module.css";
+import { NodeView } from "./NodeView/NodeView";
 
 type Props = {
   graph: Graph;
@@ -13,7 +13,7 @@ type Props = {
   onClearPrefill: (nodeId: NodeId, fieldKey: string) => void;
 };
 
-export function FormList({
+export function NodeList({
   graph,
   blueprint,
   selectedNodeId,

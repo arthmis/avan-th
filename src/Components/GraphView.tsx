@@ -2,19 +2,19 @@ import { useState } from "react";
 import { useFetchGraph } from "../formsFetch";
 import type { NodeId } from "../Graph/graph";
 import { usePrefillMap } from "../PrefillMap";
-import { FormList } from "./FormList";
+import { NodeList } from "./NodeListView/NodeListView";
 
 export function GraphView() {
   const tenantId = "1";
   const actionBlueprintId = "1";
   const graphFetchState = useFetchGraph(tenantId, actionBlueprintId);
-  const { selectedNodeId, handleSelectNode } = useSelectedForm();
+  const { selectedNodeId, handleSelectNode } = useSelectedNode();
   const { prefillMap, handleSetPrefill, handleClearPrefill } = usePrefillMap();
 
   switch (graphFetchState.type) {
     case "success":
       return (
-        <FormList
+        <NodeList
           graph={graphFetchState.data.graph}
           blueprint={graphFetchState.data.blueprint}
           selectedNodeId={selectedNodeId}
@@ -36,7 +36,7 @@ export function GraphView() {
   }
 }
 
-function useSelectedForm() {
+function useSelectedNode() {
   const [selectedNodeId, setSelectedForm] = useState<NodeId | undefined>();
 
   const handleSelectNode = (nodeId: NodeId) => {
