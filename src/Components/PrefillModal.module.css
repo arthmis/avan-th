@@ -23,7 +23,8 @@
     width: 100%;
     padding: 12px;
     border-radius: 8px;
-    max-height: 80svh;
+    height: 100%;
+    max-height: 70svh;
     overflow-y: auto;
 }
 
