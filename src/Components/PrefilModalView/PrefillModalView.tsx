@@ -1,6 +1,6 @@
 import type { Blueprint, NodeDataSource } from "../../Graph/graph";
 import type { AncestorNode } from "../../Graph/traverseGraph";
-import type { PrefillSource } from "../../PrefillMap";
+import type { PrefillSource } from "../../hooks/usePrefillMap";
 import { DataSourceView } from "./DataSourceView";
 import styles from "./PrefillModalView.module.css";
 

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { NodeId } from "./Graph/graph";
+import type { NodeId } from "../Graph/graph";
 
 export type PrefillSource = PrefillNodeSource | PrefillGlobalSource;
 

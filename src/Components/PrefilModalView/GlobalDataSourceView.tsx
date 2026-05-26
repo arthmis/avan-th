@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { GlobalDataSource } from "../../Graph/graph";
-import type { PrefillSource } from "../../PrefillMap";
+import type { PrefillSource } from "../../hooks/usePrefillMap";
 import styles from "./PrefillModalView.module.css";
 
 type GlobalDataSourceViewProps = {

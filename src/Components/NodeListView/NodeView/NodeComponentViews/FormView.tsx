@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import type { Blueprint, FormDefinition, Graph, GraphNode } from "../../../../Graph/graph";
 import { getAncestorNodes } from "../../../../Graph/traverseGraph";
-import type { PrefillSource } from "../../../../PrefillMap";
+import type { PrefillSource } from "../../../../hooks/usePrefillMap";
 import { PrefillModal } from "../../../PrefilModalView/PrefillModalView";
 import { FieldRow } from "../../FieldRowView";
 import formClasses from "./FormView.module.css";

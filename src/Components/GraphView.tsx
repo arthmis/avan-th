@@ -1,6 +1,6 @@
 import { useFetchGraph } from "../formsFetch";
+import { usePrefillMap } from "../hooks/usePrefillMap";
 import { useSelectedNode } from "../hooks/useSelectedNode";
-import { usePrefillMap } from "../PrefillMap";
 import { NodeList } from "./NodeListView/NodeListView";
 
 export function GraphView() {

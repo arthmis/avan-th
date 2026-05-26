@@ -1,6 +1,6 @@
 import clsx from "clsx";
 import type { FormField } from "../../Graph/graph";
-import type { PrefillSource } from "../../PrefillMap";
+import type { PrefillSource } from "../../hooks/usePrefillMap";
 import fieldRowClasses from "./FieldRowView.module.css";
 
 type Props = {

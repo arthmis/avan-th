@@ -1,5 +1,5 @@
 import type { Blueprint, Graph, NodeId } from "../../Graph/graph";
-import type { PrefillMap, PrefillSource } from "../../PrefillMap";
+import type { PrefillMap, PrefillSource } from "../../hooks/usePrefillMap";
 import formListClasses from "./NodeListView.module.css";
 import { NodeView } from "./NodeView/NodeView";
 

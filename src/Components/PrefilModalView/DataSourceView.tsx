@@ -1,5 +1,5 @@
 import type { Blueprint, PrefillDataSource } from "../../Graph/graph";
-import type { PrefillSource } from "../../PrefillMap";
+import type { PrefillSource } from "../../hooks/usePrefillMap";
 import { GlobalDataSourceView } from "./GlobalDataSourceView";
 import { NodeDataSourceView } from "./NodeDataSourceView";
 
