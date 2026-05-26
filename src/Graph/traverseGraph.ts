@@ -10,7 +10,7 @@ export function getAncestorNodes(
   blueprint: Blueprint,
 ): AncestorNode[] {
   const { reverseAdj } = graph;
-  const { nodeById, forms } = blueprint;
+  const { nodeById } = blueprint;
 
   const result: AncestorNode[] = [];
   const visited = new Set<NodeId>();
@@ -24,10 +24,7 @@ export function getAncestorNodes(
           visited.add(parentId);
           const node = nodeById.get(parentId);
           if (node) {
-            const form = forms.get(node.data.componentId);
-            if (form) {
-              result.push({ node });
-            }
+            result.push({ node });
           }
           queue.push(parentId);
         }
